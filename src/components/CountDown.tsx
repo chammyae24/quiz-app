@@ -29,7 +29,7 @@ const CountDown = () => {
   });
 
   return (
-    <div className="flex h-full items-center justify-center">
+    <div>
       {countTransition((style, item) => (
         <animated.h1
           style={style}

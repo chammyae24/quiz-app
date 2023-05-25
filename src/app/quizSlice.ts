@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { quiz } from "../data/config";
+import { quiz } from "../types";
 
 const initialState = {
   count: 3,
   start: false,
-  quizs: [] as quiz[]
+  quizs: [] as quiz[],
+  settings: {} as { [key: string]: number },
+  step: 0
 };
 
 export const quizSlice = createSlice({
@@ -17,6 +19,10 @@ export const quizSlice = createSlice({
     quizStart: state => {
       state.start = true;
     },
+    fetchQuiz: (state, action) => {
+      state.quizs = action.payload.questions;
+      state.settings = action.payload.settings;
+    },
     quizEnd: state => {
       state.count = 3;
       state.start = false;
@@ -24,6 +30,6 @@ export const quizSlice = createSlice({
   }
 });
 
-export const { quizStart, quizEnd, countDown } = quizSlice.actions;
+export const { quizStart, quizEnd, countDown, fetchQuiz } = quizSlice.actions;
 
 export default quizSlice.reducer;
