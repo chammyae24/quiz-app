@@ -7,7 +7,8 @@ const initialState = {
   quizs: [] as quiz[],
   settings: {} as settings,
   step: 0,
-  timer: 10
+  timer: 10,
+  pointerEvent: "auto" as "auto" | "none"
 };
 
 export const quizSlice = createSlice({
@@ -33,6 +34,9 @@ export const quizSlice = createSlice({
     stepping: state => {
       state.step += 1;
     },
+    setPointer: (state, action) => {
+      state.pointerEvent = action.payload;
+    },
     quizEnd: state => {
       state.count = 3;
       state.start = false;
@@ -49,6 +53,7 @@ export const {
   fetchQuiz,
   timerStart,
   resetTimer,
+  setPointer,
   stepping
 } = quizSlice.actions;
 

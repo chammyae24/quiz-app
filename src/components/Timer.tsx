@@ -1,10 +1,16 @@
 import { useEffect } from "react";
-import { useSpring, animated } from "@react-spring/web";
+import { useSpring, animated, SpringValue } from "@react-spring/web";
 import { useQuizDispatch, useQuizSelector } from "../hooks";
 import { timerStart } from "../app/quizSlice";
 
 const time = 10;
-const Timer = () => {
+const Timer = ({
+  fade
+}: {
+  fade: {
+    opacity: SpringValue<number>;
+  };
+}) => {
   const timer = useQuizSelector(state => state.quiz.timer);
   const dispatch = useQuizDispatch();
 
@@ -30,7 +36,10 @@ const Timer = () => {
   });
 
   return (
-    <div className="relative flex items-center justify-center">
+    <animated.div
+      style={fade}
+      className="relative flex items-center justify-center"
+    >
       <svg width="150" height="150">
         <path
           d="M 75 25 A 50 50 272 1 1 73 25"
@@ -51,7 +60,7 @@ const Timer = () => {
       <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-q-accent">
         {timer}
       </p>
-    </div>
+    </animated.div>
   );
 };
 
