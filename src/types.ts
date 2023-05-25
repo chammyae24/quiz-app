@@ -7,3 +7,10 @@ export type quiz = {
   }[];
   correct_answer: string;
 };
+
+export type settings = {
+  minumum_point: number;
+  questions_count: number;
+  total_questions: number;
+  time_duration: number;
+};

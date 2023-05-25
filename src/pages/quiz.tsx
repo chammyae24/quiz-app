@@ -6,11 +6,13 @@ import { Link } from "react-router-dom";
 import { fetchQuiz, quizEnd } from "../app/quizSlice";
 import Question from "../components/Question";
 import { useTransition } from "@react-spring/web";
+import ScoreBoard from "../components/ScoreBoard";
 
 const Quiz = () => {
   const isStarted = useQuizSelector(state => state.quiz.start);
   const quizs = useQuizSelector(state => state.quiz.quizs);
   const step = useQuizSelector(state => state.quiz.step);
+  const settings = useQuizSelector(state => state.quiz.settings);
 
   const dispatch = useQuizDispatch();
 
@@ -41,9 +43,13 @@ const Quiz = () => {
   return (
     <section className="flex h-full items-center justify-center">
       {isStarted ? (
-        transition((style, item) => (
-          <Question transition={style} quiz={quizs[item]} />
-        ))
+        transition((style, item) =>
+          item <= settings.questions_count - 1 ? (
+            <Question transition={style} quiz={quizs[item]} />
+          ) : (
+            <ScoreBoard transition={style} />
+          )
+        )
       ) : (
         <CountDown />
       )}

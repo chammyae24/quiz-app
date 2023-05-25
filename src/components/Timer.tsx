@@ -1,13 +1,16 @@
+import { useEffect } from "react";
 import { useSpring, animated } from "@react-spring/web";
-import { useEffect, useState } from "react";
+import { useQuizDispatch, useQuizSelector } from "../hooks";
+import { timerStart } from "../app/quizSlice";
 
 const time = 10;
 const Timer = () => {
-  const [timer, setTimer] = useState(10);
+  const timer = useQuizSelector(state => state.quiz.timer);
+  const dispatch = useQuizDispatch();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimer(t => (t === 0 ? 0 : t - 1));
+      dispatch(timerStart());
     }, 1000);
 
     if (timer === 0) {
@@ -17,13 +20,12 @@ const Timer = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [timer]);
+  }, [dispatch, timer]);
 
   const spring = useSpring({
-    from: { num: 471, num2: time },
-    to: { num: 160, num2: 0 },
+    from: { num: 471 },
+    to: { num: 160 },
     num: 471,
-    num2: time,
     config: { duration: time * 1000 }
   });
 
