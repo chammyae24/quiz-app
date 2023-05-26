@@ -51,6 +51,7 @@ const Question = ({ quiz, transition }: questionProps) => {
             choice={{ ...choice }}
             setChoices={setChoices}
             setIsShow={setIsShow}
+            correctAnsId={quiz.correct_answer}
           />
         ))}
       </div>

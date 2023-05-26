@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
-import { resetTimer, setPointer, stepping } from "../app/quizSlice";
+import {
+  addPoints,
+  addScores,
+  resetTimer,
+  setPointer,
+  stepping
+} from "../app/quizSlice";
 import { useQuizDispatch, useQuizSelector } from "../hooks";
+import right from "../assets/check-solid.svg";
+import wrong from "../assets/xmark-solid.svg";
 
 type ansBoxProps = {
   choice: {
@@ -25,15 +33,23 @@ type ansBoxProps = {
     >
   >;
   setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
+  correctAnsId: string;
 };
 
-const AnswerBox = ({ choice, setChoices, setIsShow }: ansBoxProps) => {
+const AnswerBox = ({
+  choice,
+  setChoices,
+  setIsShow,
+  correctAnsId
+}: ansBoxProps) => {
   const [ansBoxPosition, setAnsPosition] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const correct = correctAnsId === choice.id;
 
-  const settings = useQuizSelector(state => state.quiz.settings);
-  const step = useQuizSelector(state => state.quiz.step);
+  // const settings = useQuizSelector(state => state.quiz.settings);
+  // const step = useQuizSelector(state => state.quiz.step);
   const pointerEvents = useQuizSelector(state => state.quiz.pointerEvent);
+  const timer = useQuizSelector(state => state.quiz.timer);
   const dispatch = useQuizDispatch();
 
   const spring = useSpring({
@@ -47,6 +63,14 @@ const AnswerBox = ({ choice, setChoices, setIsShow }: ansBoxProps) => {
     dispatch(setPointer("none"));
     // pause timer
     // check correct ans
+    if (correctAnsId === choice.id) {
+      dispatch(addPoints());
+      if (timer > 5) {
+        dispatch(addScores(10));
+      } else {
+        dispatch(addScores(5));
+      }
+    }
     setChoices(choices =>
       choices.map(c =>
         c.id !== choice.id && !c.choose
@@ -84,7 +108,13 @@ const AnswerBox = ({ choice, setChoices, setIsShow }: ansBoxProps) => {
         </div>
         <div className="mx-2 text-sm">{choice.value}</div>
       </div>
-      <div className="card back bg-[#eee]">Quiz</div>
+      <div
+        className={`card back bg-[#eee] outline outline-8 ${
+          correct ? "outline-green-600" : "outline-red-600"
+        } border-2 border-solid border-white`}
+      >
+        <img src={correct ? right : wrong} alt="" width={40} height={40} />
+      </div>
     </animated.div>
   );
 };

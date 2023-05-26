@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSpring, animated, SpringValue } from "@react-spring/web";
 import { useQuizDispatch, useQuizSelector } from "../hooks";
-import { timerStart } from "../app/quizSlice";
+import { resetTimer, setPointer, stepping, timerStart } from "../app/quizSlice";
 
 const time = 10;
 const Timer = ({
@@ -13,6 +13,14 @@ const Timer = ({
 }) => {
   const timer = useQuizSelector(state => state.quiz.timer);
   const dispatch = useQuizDispatch();
+
+  useEffect(() => {
+    if (timer === 0) {
+      dispatch(stepping());
+      dispatch(setPointer("auto"));
+      dispatch(resetTimer());
+    }
+  }, [dispatch, timer]);
 
   useEffect(() => {
     const interval = setInterval(() => {
