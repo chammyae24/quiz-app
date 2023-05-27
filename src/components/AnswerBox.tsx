@@ -72,7 +72,6 @@ const AnswerBox = ({
         src: ["/sounds/wronganswer.mp3"]
       });
     }
-    sound.play();
     setChoices(choices =>
       choices.map(c =>
         c.id !== choice.id && !c.choose
@@ -84,6 +83,7 @@ const AnswerBox = ({
     setIsShow(b => !b);
     setTimeout(() => {
       setFlipped(f => !f);
+      sound.play();
     }, 500);
     setTimeout(() => {
       dispatch(stepping());
@@ -111,9 +111,9 @@ const AnswerBox = ({
         <div className="mx-2 text-sm">{choice.value}</div>
       </div>
       <div
-        className={`card back bg-[#eee] outline outline-8 ${
-          correct ? "outline-green-600" : "outline-red-600"
-        } border-2 border-solid border-white`}
+        className={`card back bg-white outline outline-4 ${
+          correct ? "border-green-600" : "border-red-600"
+        } border-[6px] border-solid outline-white`}
       >
         <img src={correct ? right : wrong} alt="" width={40} height={40} />
       </div>
