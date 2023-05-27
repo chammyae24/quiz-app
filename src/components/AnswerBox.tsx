@@ -6,6 +6,7 @@ import {
   addScores,
   resetTimer,
   setPointer,
+  setTimerPause,
   stepping
 } from "../app/quizSlice";
 import { useQuizDispatch, useQuizSelector } from "../hooks";
@@ -60,6 +61,7 @@ const AnswerBox = ({
 
   const clickHandler = () => {
     dispatch(setPointer("none"));
+    dispatch(setTimerPause(true));
     let sound: Howl;
     if (correctAnsId === choice.id) {
       dispatch(addPoints());
@@ -88,6 +90,7 @@ const AnswerBox = ({
     setTimeout(() => {
       dispatch(stepping());
       dispatch(setPointer("auto"));
+      dispatch(setTimerPause(false));
       dispatch(resetTimer());
     }, 1600);
   };

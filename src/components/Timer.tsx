@@ -11,6 +11,7 @@ const Timer = ({
   };
 }) => {
   const timer = useQuizSelector(state => state.quiz.timer);
+  const timerPause = useQuizSelector(state => state.quiz.timerPause);
   const { time_duration } = useQuizSelector(state => state.quiz.settings);
   const dispatch = useQuizDispatch();
 
@@ -20,21 +21,27 @@ const Timer = ({
       dispatch(setPointer("auto"));
       dispatch(resetTimer());
     }
-  }, [dispatch, timer]);
+  }, [dispatch, timer, timerPause]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      dispatch(timerStart());
-    }, 1000);
+    let interval: NodeJS.Timer | null = null;
 
-    if (timer === 0) {
+    if (!timerPause) {
+      interval = setInterval(() => {
+        dispatch(timerStart());
+      }, 1000);
+    }
+
+    if (timer === 0 && interval) {
       clearInterval(interval);
     }
 
     return () => {
-      clearInterval(interval);
+      if (interval) {
+        clearInterval(interval);
+      }
     };
-  }, [dispatch, timer]);
+  }, [dispatch, timer, timerPause]);
 
   const spring = useSpring({
     from: { num: 471 },
