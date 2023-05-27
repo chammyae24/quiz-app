@@ -9,7 +9,7 @@ export type quiz = {
 };
 
 export type settings = {
-  minumum_point: number;
+  minumum_scores: number;
   questions_count: number;
   total_questions: number;
   time_duration: number;

@@ -61,8 +61,6 @@ const AnswerBox = ({
 
   const clickHandler = () => {
     dispatch(setPointer("none"));
-    // pause timer
-    // check correct ans
     if (correctAnsId === choice.id) {
       dispatch(addPoints());
       if (timer > 5) {

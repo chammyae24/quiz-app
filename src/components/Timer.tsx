@@ -3,7 +3,6 @@ import { useSpring, animated, SpringValue } from "@react-spring/web";
 import { useQuizDispatch, useQuizSelector } from "../hooks";
 import { resetTimer, setPointer, stepping, timerStart } from "../app/quizSlice";
 
-const time = 10;
 const Timer = ({
   fade
 }: {
@@ -12,6 +11,7 @@ const Timer = ({
   };
 }) => {
   const timer = useQuizSelector(state => state.quiz.timer);
+  const { time_duration } = useQuizSelector(state => state.quiz.settings);
   const dispatch = useQuizDispatch();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const Timer = ({
     from: { num: 471 },
     to: { num: 160 },
     num: 471,
-    config: { duration: time * 1000 }
+    config: { duration: time_duration * 1000 }
   });
 
   return (

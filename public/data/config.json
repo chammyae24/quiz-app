@@ -1,6 +1,6 @@
 {
   "settings": {
-    "minumum_point": 3,
+    "minumum_scores": 30,
     "questions_count": 5,
     "total_questions": 10,
     "time_duration": 10

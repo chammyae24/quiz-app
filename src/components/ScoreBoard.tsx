@@ -22,28 +22,27 @@ const ScoreBoard = ({ transition }: Props) => {
 
   const points = useQuizSelector(state => state.quiz.points);
   const scores = useQuizSelector(state => state.quiz.scores);
+  const { minumum_scores, questions_count } = useQuizSelector(
+    state => state.quiz.settings
+  );
   const dispatch = useQuizDispatch();
 
-  const win = scores >= 30;
+  const win = scores >= minumum_scores;
 
-  const generateImage = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
+  const generateImage = async () => {
     try {
       const element = scoreRef.current;
 
       if (!element) return;
 
       const pic = await htmlToImage.toPng(element);
-      // linkRef.current.click();
-      const image = await fetch(pic)
-        .then(response => response.blob())
-        .then(blob => URL.createObjectURL(blob));
+      setHref(pic);
 
-      setHref(image);
-
-      if (linkRef.current) {
-        linkRef.current.click();
-      }
+      setTimeout(() => {
+        if (linkRef.current) {
+          linkRef.current.click();
+        }
+      }, 500);
     } catch (error) {
       console.error("Error generating or sharing image:", error);
     }
@@ -53,13 +52,15 @@ const ScoreBoard = ({ transition }: Props) => {
     <animated.div className="flex-col gap-4" style={transition}>
       <div ref={scoreRef} className="pt-8">
         <div className="relative flex flex-col gap-4 rounded bg-white px-12 py-4 text-center text-black shadow-lg">
-          <div className="absolute left-1/2 top-0 h-16  w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-8 border-white bg-q-primary p-3 text-xl">
+          <div className="absolute left-1/2 top-0 box-content flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-q-accent  bg-q-primary text-xl outline outline-8 outline-white">
             {win ? "🏆" : "😭"}
           </div>
           <h1 className="mt-4 text-2xl font-bold text-q-secondary">
             {win ? "Congratulations" : "Sorry"}
           </h1>
-          <p>You're correct {points} out 5 times.</p>
+          <p>
+            You're correct {points} out {questions_count} times.
+          </p>
           <div className="flex flex-col items-center gap-1">
             <p>{scores}</p>
             <p className="w-fit rounded-full bg-q-primary px-2 py-1 text-xs text-white">
