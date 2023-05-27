@@ -12,7 +12,12 @@ const initialState = {
   step: 0,
   timer: 10,
   pointerEvent: "auto" as "auto" | "none",
-  bestScores: 0
+  bestScores: 0,
+  soundControls: {
+    bgMusic: null,
+    bgMusicVol: 0.5,
+    sfxVol: 0.5
+  }
 };
 
 export const quizSlice = createSlice({
@@ -60,6 +65,15 @@ export const quizSlice = createSlice({
     },
     setBestScores: (state, action) => {
       state.bestScores = action.payload;
+    },
+    setBgMusic: (state, action) => {
+      state.soundControls.bgMusic = action.payload;
+    },
+    setBgMusicVol: (state, action) => {
+      state.soundControls.bgMusicVol = action.payload;
+    },
+    setSfxVol: (state, action) => {
+      state.soundControls.sfxVol = action.payload;
     }
   }
 });
@@ -76,7 +90,10 @@ export const {
   addPoints,
   addScores,
   stepping,
-  setBestScores
+  setBestScores,
+  setBgMusic,
+  setBgMusicVol,
+  setSfxVol
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

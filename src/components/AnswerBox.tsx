@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
+import { Howl } from "howler";
 import {
   addPoints,
   addScores,
@@ -59,11 +60,19 @@ const AnswerBox = ({
 
   const clickHandler = () => {
     dispatch(setPointer("none"));
+    let sound: Howl;
     if (correctAnsId === choice.id) {
       dispatch(addPoints());
-
       dispatch(addScores(timer));
+      sound = new Howl({
+        src: ["/sounds/rightanswer.mp3"]
+      });
+    } else {
+      sound = new Howl({
+        src: ["/sounds/wronganswer.mp3"]
+      });
     }
+    sound.play();
     setChoices(choices =>
       choices.map(c =>
         c.id !== choice.id && !c.choose
