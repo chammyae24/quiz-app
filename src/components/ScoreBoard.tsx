@@ -7,6 +7,7 @@ import { useQuizDispatch, useQuizSelector } from "../hooks";
 import { quizEnd, setBestScores } from "../app/quizSlice";
 import replay from "../assets/rotate-right-solid.svg";
 import download from "../assets/download-solid.svg";
+import share from "../assets/share-nodes-solid.svg";
 
 type Props = {
   transition: {
@@ -37,14 +38,41 @@ const ScoreBoard = ({ transition }: Props) => {
 
       if (!element) return;
 
-      const pic = await htmlToImage.toPng(element);
-      setHref(pic);
+      const image = await htmlToImage.toPng(element);
+      setHref(image);
 
-      setTimeout(() => {
-        if (linkRef.current) {
-          linkRef.current.click();
+      if (linkRef.current) {
+        linkRef.current.href = image;
+        linkRef.current.click();
+      }
+    } catch (error) {
+      console.error("Error generating or sharing image:", error);
+    }
+  };
+
+  const handleSystemShare = async () => {
+    try {
+      const element = scoreRef.current;
+
+      if (!element) return;
+
+      const image = await htmlToImage.toCanvas(element);
+
+      image.toBlob(async blob => {
+        if (navigator.share) {
+          await navigator
+            .share({
+              title: "Share Image",
+              files: [new File([blob!], "scores.png", { type: "image/png" })]
+            })
+            .then(() => console.log("Image shared successfully."))
+            .catch(error => {
+              console.error("Error sharing image:", error);
+            });
+        } else {
+          console.warn("Web Share API is not supported in this browser.");
         }
-      }, 500);
+      });
     } catch (error) {
       console.error("Error generating or sharing image:", error);
     }
@@ -67,7 +95,7 @@ const ScoreBoard = ({ transition }: Props) => {
 
   return (
     <animated.div className="flex-col gap-4" style={transition}>
-      <div ref={scoreRef} className="pt-8">
+      <div ref={scoreRef} className="pt-9">
         <div className="relative flex flex-col gap-4 rounded bg-white px-12 py-4 text-center text-black shadow-lg">
           <div className="absolute left-1/2 top-0 box-content flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-q-accent  bg-q-primary text-xl outline outline-8 outline-white">
             {win ? "🏆" : "😭"}
@@ -96,6 +124,9 @@ const ScoreBoard = ({ transition }: Props) => {
         </Link>
         <button onClick={generateImage}>
           <img src={download} alt="download-icon" width={30} height={30} />
+        </button>
+        <button onClick={handleSystemShare}>
+          <img src={share} alt="share-icon" width={30} height={30} />
         </button>
         <a href={href} className="hidden" ref={linkRef} download="scores.png">
           link

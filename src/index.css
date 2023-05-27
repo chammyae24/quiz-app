@@ -10,8 +10,9 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  @apply overflow-hidden;
+body,
+html {
+  @apply scrollbar-none;
 }
 
 main {
