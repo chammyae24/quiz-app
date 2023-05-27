@@ -46,8 +46,6 @@ const AnswerBox = ({
   const [flipped, setFlipped] = useState(false);
   const correct = correctAnsId === choice.id;
 
-  // const settings = useQuizSelector(state => state.quiz.settings);
-  // const step = useQuizSelector(state => state.quiz.step);
   const pointerEvents = useQuizSelector(state => state.quiz.pointerEvent);
   const timer = useQuizSelector(state => state.quiz.timer);
   const dispatch = useQuizDispatch();
@@ -63,11 +61,8 @@ const AnswerBox = ({
     dispatch(setPointer("none"));
     if (correctAnsId === choice.id) {
       dispatch(addPoints());
-      if (timer > 5) {
-        dispatch(addScores(10));
-      } else {
-        dispatch(addScores(5));
-      }
+
+      dispatch(addScores(timer));
     }
     setChoices(choices =>
       choices.map(c =>

@@ -11,7 +11,8 @@ const initialState = {
   scores: 0,
   step: 0,
   timer: 10,
-  pointerEvent: "auto" as "auto" | "none"
+  pointerEvent: "auto" as "auto" | "none",
+  bestScores: 0
 };
 
 export const quizSlice = createSlice({
@@ -20,6 +21,9 @@ export const quizSlice = createSlice({
   reducers: {
     countDown: state => {
       state.count -= 1;
+    },
+    setTimer: (state, action) => {
+      state.timer = action.payload;
     },
     quizStart: state => {
       state.start = true;
@@ -32,7 +36,7 @@ export const quizSlice = createSlice({
       state.timer -= 1;
     },
     resetTimer: state => {
-      state.timer = 10;
+      state.timer = state.settings.time_duration;
     },
     stepping: state => {
       state.step += 1;
@@ -52,13 +56,17 @@ export const quizSlice = createSlice({
       state.points = 0;
       state.scores = 0;
       state.step = 0;
-      state.timer = 10;
+      state.timer = state.settings.time_duration;
+    },
+    setBestScores: (state, action) => {
+      state.bestScores = action.payload;
     }
   }
 });
 
 export const {
   quizStart,
+  setTimer,
   quizEnd,
   countDown,
   fetchQuiz,
@@ -67,7 +75,8 @@ export const {
   setPointer,
   addPoints,
   addScores,
-  stepping
+  stepping,
+  setBestScores
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useQuizDispatch, useQuizSelector } from "../hooks";
 import CountDown from "../components/CountDown";
 
-import { fetchQuiz } from "../app/quizSlice";
+import { fetchQuiz, setTimer } from "../app/quizSlice";
 import Question from "../components/Question";
 import { useTransition } from "@react-spring/web";
 import ScoreBoard from "../components/ScoreBoard";
@@ -12,7 +12,9 @@ const Quiz = () => {
   const isStarted = useQuizSelector(state => state.quiz.start);
   const quizs = useQuizSelector(state => state.quiz.quizs);
   const step = useQuizSelector(state => state.quiz.step);
-  const settings = useQuizSelector(state => state.quiz.settings);
+  const { questions_count, time_duration } = useQuizSelector(
+    state => state.quiz.settings
+  );
 
   const dispatch = useQuizDispatch();
 
@@ -24,6 +26,7 @@ const Quiz = () => {
       .then(data => {
         if (isSubscribed) {
           dispatch(fetchQuiz(data));
+          dispatch(setTimer(time_duration));
         }
       })
       .catch(err => {
@@ -33,7 +36,7 @@ const Quiz = () => {
     return () => {
       isSubscribed = false;
     };
-  }, [dispatch]);
+  }, [dispatch, time_duration]);
 
   const transition = useTransition([step], {
     from: { opacity: 0, x: 300, display: "none" },
@@ -52,7 +55,7 @@ const Quiz = () => {
     <section className="flex h-full items-center justify-center">
       {isStarted ? (
         transition((style, item) =>
-          item <= settings.questions_count - 1 ? (
+          item <= questions_count - 1 ? (
             <Question transition={style} quiz={quizs[item]} />
           ) : (
             <ScoreBoard transition={style} />

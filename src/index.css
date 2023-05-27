@@ -10,6 +10,10 @@
   font-family: "Poppins", sans-serif;
 }
 
+body {
+  @apply overflow-hidden;
+}
+
 main {
   perspective: 500px;
 }

@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SpringValue, animated } from "@react-spring/web";
-import * as htmlToImage from "html-to-image";
 import { Link } from "react-router-dom";
+import * as htmlToImage from "html-to-image";
+import Cookies from "js-cookie";
 import { useQuizDispatch, useQuizSelector } from "../hooks";
-import { quizEnd } from "../app/quizSlice";
+import { quizEnd, setBestScores } from "../app/quizSlice";
 import replay from "../assets/rotate-right-solid.svg";
 import download from "../assets/download-solid.svg";
 
@@ -22,6 +23,7 @@ const ScoreBoard = ({ transition }: Props) => {
 
   const points = useQuizSelector(state => state.quiz.points);
   const scores = useQuizSelector(state => state.quiz.scores);
+  const bestScores = useQuizSelector(state => state.quiz.bestScores);
   const { minumum_scores, questions_count } = useQuizSelector(
     state => state.quiz.settings
   );
@@ -48,6 +50,21 @@ const ScoreBoard = ({ transition }: Props) => {
     }
   };
 
+  useEffect(() => {
+    const cookies = Cookies.get("best-scores");
+    if (cookies) {
+      if (scores >= parseInt(cookies)) {
+        dispatch(setBestScores(scores));
+        Cookies.set("best-scores", scores.toString());
+      } else {
+        dispatch(setBestScores(parseInt(cookies)));
+      }
+    } else {
+      dispatch(setBestScores(scores));
+      Cookies.set("best-scores", scores.toString());
+    }
+  }, [scores, dispatch]);
+
   return (
     <animated.div className="flex-col gap-4" style={transition}>
       <div ref={scoreRef} className="pt-8">
@@ -66,7 +83,7 @@ const ScoreBoard = ({ transition }: Props) => {
             <p className="w-fit rounded-full bg-q-primary px-2 py-1 text-xs text-white">
               CURRENT SCORE
             </p>
-            <p>50</p>
+            <p>{bestScores}</p>
             <p className="w-fit rounded-full bg-q-secondary px-2 py-1 text-xs text-white">
               BEST SCORE
             </p>
